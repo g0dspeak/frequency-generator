@@ -1,0 +1,31 @@
+<html>
+<head>
+<link rel="icon" href="tone_128.png" type="image/x-icon" />
+<link rel="stylesheet" href="style.css" />
+<script src="graph.js"></script>
+<script src="tone_generator.js"></script>
+<script src="widgets.js"></script>
+<script src="chrome.js"></script>
+<script src="sprintf-0.7-beta1.js"></script>
+<style type="text/css">
+.multichannel { }
+</style>
+</head>
+<body onload="init()">
+<!-- Master waveform display -->
+<h2 id="master_control">
+	<span class="multichannel">Master</span>
+	<embed id="btn_vol" src="volume.svg" type="image/svg+xml" height="30" width="30" />
+	<embed id="btn_particles" src="particles.svg" type="image/svg+xml" height="30" />
+	<embed id="btn_multichannel" src="multichannel.svg" type="image/svg+xml" height="30" />
+	<embed id="btn_add" src="add_channel.svg" type="image/svg+xml" height="30" class="multichannel"/>
+</h2>
+<div id="master" class="multichannel">
+	<canvas id="master_graph" class="graph"></canvas>
+</div>
+<input id="display_width" class="multichannel" type="range" min="5" max="2000" style="width: 100%" step="5" value="20" onchange="update_display_width()"/>
+<!-- individual channel waveform display -->
+<div id="channel_board">
+</div>
+</body>
+</html>

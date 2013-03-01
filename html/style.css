@@ -1,0 +1,96 @@
+* {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	margin: 20px;
+	font-family: Verdana, Tahoma, Arial, sans-serif;
+	font-size: 10pt;
+}
+
+canvas {
+	margin-bottom: 1em;
+}
+
+h2 {
+	display:table-cell;
+	vertical-align: middle;
+	font-family: Verdana, Tahoma, Arial, sans-serif;
+	font-size: 12pt;
+	height: 30px;
+	line-height: 30px;
+}
+
+embed {
+	vertical-align: middle;
+}
+
+#master_graph {
+	margin-top:  1em;
+}
+
+.channel_controls input[type='range'] {
+	margin-left:5%;
+	margin-right:5%;
+	width: 90%;
+}
+
+.channel_controls {
+	width: 100%;
+	text-align: center;
+}
+
+.graph { 
+	width: 100%;
+	height: 100px;
+	border: 1px solid black; 
+	border-radius: 10px;
+} 
+
+.button {
+	border: 1px solid black;
+	border-radius: 5px;
+	font-family: monospace;
+	width: 40px;
+	text-align: center;
+}
+
+.channel {
+	margin-top: 10px;
+}
+
+.value_display {
+	font-family: Verdana, Tahoma, Arial, sans-serif;
+	font-size: 10pt;
+	text-align: right;
+	border: none;
+}
+
+.frequency_display {
+	width: 3em;
+}
+
+.amplitude_display {
+	width: 3em;
+}
+
+.phase_display {
+	width: 2em;
+}
+
+.unit_display {
+	color: #cccccc;
+}
+
+.frequency_range {
+	width: 100%;
+}
+
+.amplitude_range {
+	width: 100%;
+}
+
+.phase_range {
+	width: 100%;
+}

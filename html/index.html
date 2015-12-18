@@ -15,15 +15,21 @@
 <!-- Master waveform display -->
 <h2 id="master_control">
 	<span class="multichannel">Master</span>
-	<embed id="btn_vol" src="volume.svg" type="image/svg+xml" height="30" width="30" />
-	<embed id="btn_particles" src="particles.svg" type="image/svg+xml" height="30" />
-	<embed id="btn_multichannel" src="multichannel.svg" type="image/svg+xml" height="30" />
-	<embed id="btn_add" src="add_channel.svg" type="image/svg+xml" height="30" class="multichannel"/>
+	<embed id="btn_vol" class="button" src="volume.svg" type="image/svg+xml" height="30" width="30" />
+	<embed id="btn_particles" class="button" src="particles.svg" type="image/svg+xml" height="30" />
+	<embed id="btn_multichannel" class="button" src="multichannel.svg" type="image/svg+xml" height="30" />
+	<embed id="btn_add" class="multichannel button" src="add_channel.svg" type="image/svg+xml" height="30" class="multichannel"/>
 </h2>
 <div id="master" class="multichannel">
 	<canvas id="master_graph" class="graph"></canvas>
 </div>
-<input id="display_width" class="multichannel" type="range" min="5" max="2000" style="width: 100%" step="5" value="20" onchange="update_display_width()"/>
+<div class="display_width_labels">
+<span class="label">Display Width</span>
+<input id="display_width_value" class="width_display value_display" type="text"  value="0"/>
+<span class="unit_display">m</span>
+<span>
+</div>
+<input id="display_width" class="" type="range" min="5" max="2000" style="width: 100%" step="5" value="20" />
 <!-- individual channel waveform display -->
 <div id="channel_board">
 </div>

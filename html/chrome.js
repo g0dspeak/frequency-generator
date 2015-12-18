@@ -9,7 +9,9 @@ var btn_vol=null;
 var btn_particle=null;
 var btn_multichannel=null;
 var multichannel=true;
-
+var frequency_max=10000
+var frequency_min=100
+var frequency_steps=10000
 
 function init()
 {
@@ -22,6 +24,13 @@ function init()
 	master_graph.x_ticks=get_ticks(8);
 	master_graph.tick_format=function(tick) { return sprintf('%0.2fm',tick); };
 	master_graph.reset();
+	// Graph display Width
+	var dw=document.getElementById('display_width');
+	dw.addEventListener("change",function() { update_display_width(); } )
+	dw.addEventListener("input",function() { update_display_width(); } )
+	var dwv=document.getElementById('display_width_value');
+	dwv.value=sprintf("%0.1f",display_width)
+	dwv.addEventListener("change",function() { dw.value=parseFloat(dwv.value)*10;      update_display_width(); dwv.blur();} )
 	// Create the tone generator
 	generator=new ToneGenerator();
 	// Check for resizes
@@ -41,6 +50,7 @@ function init()
 	// setup the multichannel button
 	btn_multichannel=document.getElementById('btn_multichannel').getSVGDocument().defaultView
 	btn_multichannel.addEventListener("click", toggle_multichannel);
+	toggle_multichannel();
 }
 
 function delete_channels()
@@ -119,7 +129,7 @@ function add_channel()
 	input_row.appendChild(f_input_cell);
 
 	var f_label=document.createElement('span');
-	f_label.innerHTML='Frequency:';
+	f_label.innerHTML='Frequency';
 	f_label.className="label";
 	f_label_cell.appendChild(f_label);
 
@@ -141,8 +151,9 @@ function add_channel()
 	f_range.type="range";
 	f_range.className="frequency_range";
 	f_range.addEventListener("change",function() { update_wave(channel_id); } );
+	f_range.addEventListener("input",function() { update_wave(channel_id); } );
 	f_input_cell.appendChild(f_range);
-	channel.frequency=new LogRange(f_range,100,10000,10000);
+	channel.frequency=new LogRange(f_range,frequency_min,frequency_max,frequency_steps);
 
 
 	// Create the amplitude inputs
@@ -152,7 +163,7 @@ function add_channel()
 	input_row.appendChild(A_input_cell);
 	
 	var A_label=document.createElement('span');
-	A_label.innerHTML='Amplitude:';
+	A_label.innerHTML='Amplitude';
 	A_label.className="label";
 	A_label_cell.appendChild(A_label);
 	
@@ -174,6 +185,7 @@ function add_channel()
 	A_range.type="range";
 	A_range.className="amplitude_range";
 	A_range.addEventListener("change",function() { update_wave(channel_id); } );
+	A_range.addEventListener("input",function() { update_wave(channel_id); } );
 	A_range.min=0;
 	A_range.max=1000;
 	A_range.value=500;
@@ -192,7 +204,7 @@ function add_channel()
 	channel.appendChild(phase_div);
 
 	var phase_label=document.createElement('span');
-	phase_label.innerHTML='Phase:';
+	phase_label.innerHTML='Phase';
 	phase_label.className="label";
 	phase_label_cell.appendChild(phase_label);
 	
@@ -206,14 +218,15 @@ function add_channel()
 
 	var phase_unit_display=document.createElement('span');
 	phase_unit_display.className='unit_display';
-	phase_unit_display.innerHTML='°';
+	phase_unit_display.innerHTML='&deg;';
 	phase_label_cell.appendChild(phase_unit_display);
 
 	var phase_range=document.createElement('input');
 	phase_range.id=channel_id+'_amp';
 	phase_range.type="range";
-	phase_range.className="amplitude_range";
+	phase_range.className="phase_range";
 	phase_range.addEventListener("change",function() { update_wave(channel_id); } );
+	phase_range.addEventListener("input",function() { update_wave(channel_id); } );
 	phase_range.min=0;
 	phase_range.max=1000;
 	phase_range.value=0;
@@ -229,7 +242,7 @@ function add_channel()
 	delete_btn.id=channel_id+"_btn_delete";
 	delete_btn.src="trash_can.svg";
 	delete_btn.height="20";
-	delete_btn.className="multichannel";
+	delete_btn.className="multichannel button";
 	delete_btn.addEventListener("load",function() { 
 		delete_btn.getSVGDocument().defaultView.addEventListener("click", function() { delete_channel(channel_id); } );
 	} );
@@ -319,6 +332,7 @@ function draw_wave(channel_id)
 function update_display_width()
 {
 	display_width=parseInt(document.getElementById('display_width').value)/10;
+	document.getElementById('display_width_value').value=sprintf("%0.1f",display_width);
 	for( channel_id in channels)
 	{
 		var channel=channels[channel_id];

@@ -5,10 +5,10 @@ function ToneGenerator()
 {
 	var generator=this;
 	this.source_count=0;
-	this.context = new webkitAudioContext();
+	this.context = new AudioContext();
 	this.sources={};
 	this.bufferSize=8192;
-	this.node = this.context.createJavaScriptNode(this.bufferSize, 1, 1);
+	this.node = this.context.createScriptProcessor(this.bufferSize, 1, 1);
 	this.sampleRate = this.context.sampleRate
 	this.playing=true;
 

@@ -67,13 +67,13 @@ function Sinewave()
 	this.f=440; // Frequency in Hz
 	this.phase0=0; // initial phase offset
 	this.phase=0; // phase
-	this.v=343.2
+	this.c=343.2
 	this._phase=0; // phase offset from previous block of data
 	this.sampleRate=0;
 
 	function waveform(x)
 	{
-		var lambda=this.v/this.f;
+		var lambda=this.c/this.f;
 		var k=1/lambda;  // the wave number
 		return this.A*Math.sin(2*Math.PI*k*x+this.phase); 
 	}

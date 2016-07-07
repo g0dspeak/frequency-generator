@@ -1,0 +1,175 @@
+<html>
+<head>
+<link rel="icon" href="tone_128.png" type="image/x-icon" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="widgets.css" />
+<style>
+.range_wrapper {
+text-align: center;
+}
+</style>
+<script src="sprintf-0.7-beta1.js"></script>
+<script>
+function extend(sup,sub)
+{
+	for(var i in sup.prototype)
+	{
+		sub.prototype[i]=sup.prototype[i]
+	}
+}
+
+function EventObject()
+{	
+}
+EventObject.prototype.listeners={}
+
+function addEventListener(evt,listener)
+{
+	if(!(evt in this.listeners))
+	{
+		this.listeners[evt]=[]
+	}
+	this.listeners[evt].push(listener)
+}
+EventObject.prototype.addEventListener=addEventListener
+
+function raiseEvent(evt,values)
+{
+	values=values || {}
+	if( evt in this.listeners )
+	{
+		var e=new Object()
+		e.type=evt
+		e.source=this
+		for(var k in values)
+		{
+			e[k]=values[k]
+		}
+		
+		var listeners=this.listeners[evt]
+		for( var n=0; n<listeners.length; n++)
+		{
+			listeners[n](e)
+		}
+	}
+}
+EventObject.prototype.raiseEvent=raiseEvent
+
+// Puts an editable label above a range input
+//
+// range: the native range input
+// 
+// Keyword arguments:
+// label: the label text
+// unit:  the unit text
+// width: the input css width 
+function LabeledRange(range,kwargs)
+{
+	this.range=range
+	this.range.label=this
+	this.range.addEventListener("change",labeledRangeRangeUpdated)
+	this.range.addEventListener("input",labeledRangeRangeUpdated)
+	this.element=document.createElement('div')
+	this.input=document.createElement('input')
+	this.input.label=this
+	this.input.addEventListener("change",labeledRangeInputUpdated)
+
+	var kwargs=kwargs || {}
+	div_wrapper=this.element
+	div_wrapper.className='labeled_range'
+	var div_range=document.createElement('div')
+
+	// The label
+	var label=document.createElement('span')
+	label.className='label'
+	if('label' in kwargs)
+	{
+		label.innerHTML=kwargs['label']
+	}
+	else if ( 'label' in range.dataset )
+	{
+		label.dataset['label']
+	}
+	div_wrapper.appendChild(label)
+
+	this.input.type="number"
+	if('width' in kwargs)
+	{
+		this.input.style.width=kwargs.width
+	}
+	this.input.value=range.value
+	div_wrapper.appendChild(this.input)
+
+	var unit=document.createElement('span')
+	unit.className='unit'
+	if('unit' in kwargs)
+	{
+		unit.innerHTML=kwargs.unit
+	}
+	else if ( 'unit' in range.dataset )
+	{	
+		unit.innerHTML=range.dataset.unit
+	}
+	div_wrapper.appendChild(unit)
+
+	div_wrapper.appendChild(div_range)
+	range.parentElement.replaceChild(div_wrapper,range)
+	div_range.appendChild(range)
+}
+LabeledRange.prototype._value=null
+
+function setLabeledRangeValue(v)
+{
+	if( this._value!=v )
+	{
+		var e={'oldValue':this._value,'newValue':v}
+		this._value=v
+		this.raiseEvent('change',e)
+	}
+}
+
+function getLabeledRangeValue(v)
+{
+	return this._value
+}
+
+Object.defineProperty(LabeledRange.prototype,'value',{
+	set: setLabeledRangeValue,
+	get: getLabeledRangeValue,
+	enumerable: true})
+
+function labeledRangeInputUpdated(e)
+{
+	var labeled_range=this.label
+	labeled_range.value=this.value
+	labeled_range.range.value=this.value
+} 
+
+function labeledRangeRangeUpdated(e)
+{
+	var labeled_range=this.label
+	labeled_range.value=this.value
+	labeled_range.input.value=this.value
+}
+
+extend(EventObject,LabeledRange)
+
+function init() 
+{
+	console.log('init()');
+	var r=document.getElementById('display_width')
+	lr=new LabeledRange(r,{label: 'Display Width',width: "3em",unit: "m"})
+}
+
+</script>
+</head>
+<body onload="init()">
+MOCKUP:
+<div class="range">
+<div class="range_label"><span class="label">Label Width</span><input id="" class="width_display value_display" type="text"  value="0"/><span class="unit_display">m</span></div>
+<input id="" class="" type="range" min="5" max="2000" style="width: 100%" step="5" value="20" />
+</div>
+
+<input id="display_width" type="range" min="1.0" max="100.0" step="0.1" data-unit="m"/>
+</body>
+</html>

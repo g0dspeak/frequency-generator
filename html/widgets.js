@@ -20,11 +20,13 @@ function LogRange(range,min,max,stops)
 	function setValue(v)
 	{
 		v=(Math.log(v)/Math.LN10-this.b)/this.m
-		range.value=v
+		this.range.value=v
 	}
 	this.setValue=setValue
 	this.setValue(range.value)
 
 	Object.defineProperty(this,"value",{ "get": getValue, "set": setValue, "enumberable":true} );
-		
 }
+
+/*
+*/

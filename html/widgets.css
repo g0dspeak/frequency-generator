@@ -1,0 +1,29 @@
+.labeled_range {
+	text-align: center;
+}
+.labeled_range input[type="range"] {
+width: 100%
+}
+
+.labeled_range .label::after {
+	content: ":";
+}
+
+.labeled_range input[type="number"] {
+	font-family: Verdana, Tahoma, Arial, sans-serif;
+	font-size: 10pt;
+	text-align: right;
+	border: none;
+}
+
+.labeled_range input[type="number"]::-webkit-inner-spin-button,
+.labeled_range input[type="number"]::-webkit-outer-spin-button 
+ {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.labeled_range .unit {
+	color: #aaaaaa;
+}
+

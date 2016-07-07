@@ -60,6 +60,7 @@ embed {
 
 .button {
 	padding: 5px;
+	margin: 1px;
 }
 
 .channel {
@@ -94,7 +95,7 @@ embed {
 }
 
 .unit_display {
-	color: #cccccc;
+	color: #aaaaaa;
 }
 
 .frequency_range {

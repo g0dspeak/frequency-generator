@@ -24,6 +24,7 @@ function init()
 	master_graph.x_ticks=get_ticks(8);
 	master_graph.tick_format=function(tick) { return sprintf('%0.2fm',tick); };
 	master_graph.reset();
+
 	// Graph display Width
 	var dw=document.getElementById('display_width');
 	dw.addEventListener("change",function() { update_display_width(); } )
@@ -31,22 +32,30 @@ function init()
 	var dwv=document.getElementById('display_width_value');
 	dwv.value=sprintf("%0.1f",display_width)
 	dwv.addEventListener("change",function() { dw.value=parseFloat(dwv.value)*10;      update_display_width(); dwv.blur();} )
+	dwv.addEventListener("keydown",display_width_inc_dec);
+
 	// Create the tone generator
 	generator=new ToneGenerator();
+
 	// Check for resizes
 	window.addEventListener("resize",draw_waves);
+
 	// Add a channel
 	add_channel();
+
 	// get volume events
 	btn_vol=document.getElementById('btn_vol').getSVGDocument().defaultView;
 	btn_vol.addEventListener("click", function() {btn_vol.toggle_mute(); update_vol();});
 	btn_vol.mute();
+
 	// setup the add button event
 	document.getElementById('btn_add').getSVGDocument().defaultView.addEventListener("click", add_channel);
+
 	// setup the particle button event
 	btn_particle=document.getElementById('btn_particles').getSVGDocument().defaultView
 	btn_particle.addEventListener("click", toggle_particles);
 	btn_particle.disable();
+
 	// setup the multichannel button
 	btn_multichannel=document.getElementById('btn_multichannel').getSVGDocument().defaultView
 	btn_multichannel.addEventListener("click", toggle_multichannel);
@@ -75,7 +84,7 @@ function get_ticks(count)
 {
 	var delta=display_width/count;
 	var ticks=[]
-	for( i=1; i<count; i++ )
+	for( var i=1; i<count; i++ )
 	{
 		ticks[i-1]=i*delta;
 	}
@@ -135,6 +144,7 @@ function add_channel()
 
 	var f_display=document.createElement('input');
 	f_display.type="text";
+	f_display.id=channel_id+'_f_input';
 	f_display.className='frequency_display value_display';
 	f_display.value='0';
 	f_display.addEventListener("change",function() { channel.frequency.setValue(f_display.value); update_wave(channel_id); f_display.blur();} );
@@ -169,6 +179,7 @@ function add_channel()
 	
 	var A_display=document.createElement('input');
 	A_display.type="text";
+	A_display.id=channel_id+'_amp_input';
 	A_display.className='amplitude_display value_display';
 	A_display.value='0';
 	A_display.addEventListener("change",function() { channel.amplitude.value=(10*A_display.value); update_wave(channel_id); A_display.blur();} );
@@ -210,6 +221,7 @@ function add_channel()
 	
 	var phase_display=document.createElement('input');
 	phase_display.type="text";
+	phase_display.id=channel_id+'_phase_input';
 	phase_display.className='phase_display value_display';
 	phase_display.value='0';
 	phase_display.addEventListener("change",function(e) { channel.phase.value=(1000*phase_display.value/360); update_wave(channel_id); phase_display.blur();} );
@@ -222,7 +234,7 @@ function add_channel()
 	phase_label_cell.appendChild(phase_unit_display);
 
 	var phase_range=document.createElement('input');
-	phase_range.id=channel_id+'_amp';
+	phase_range.id=channel_id+'_phase';
 	phase_range.type="range";
 	phase_range.className="phase_range";
 	phase_range.addEventListener("change",function() { update_wave(channel_id); } );
@@ -246,8 +258,19 @@ function add_channel()
 	delete_btn.addEventListener("load",function() { 
 		delete_btn.getSVGDocument().defaultView.addEventListener("click", function() { delete_channel(channel_id); } );
 	} );
-	// controls.appendChild(delete_btn);
 	title.appendChild(delete_btn);
+
+	var mute_btn=document.createElement('embed');
+	mute_btn.id=channel_id+"_btn_mute";
+	mute_btn.src="volume.svg";
+	mute_btn.height="20";
+	mute_btn.className="multichannel button";
+	mute_btn.addEventListener("load",function() { 
+		var mute_btn_view=mute_btn.getSVGDocument().defaultView;
+		mute_btn_view.addEventListener("click", function() { mute_btn_view.toggle_mute(); mute_channel(channel_id); } );
+	} );
+	btn_vol=document.getElementById('btn_vol').getSVGDocument().defaultView;
+	title.appendChild(mute_btn);
 
 	// Create the channel wave source
 	var source = new Sinewave();
@@ -284,6 +307,16 @@ function update_wave(channel_id)
 	draw_master();
 }
 
+function mute_channel(channel_id)
+{
+	var channel=document.getElementById(channel_id);
+	channel.source.mute=!channel.source.mute;
+	document.getElementById(channel_id+'_amp').disabled=channel.source.mute;
+	document.getElementById(channel_id+'_amp_input').disabled=channel.source.mute;
+	draw_wave(channel_id);
+	draw_master();
+}
+
 function draw_master()
 {
 	var func=function(x)
@@ -293,8 +326,11 @@ function draw_master()
 		for( channel_id in channels)
 		{
 			var channel=document.getElementById(channel_id);
-			y+=channel.source.waveform(x);
-			channel_count++;
+			if( !channel.source.mute )
+			{
+				y+=channel.source.waveform(x);
+				channel_count++;
+			}
 		}
 		return y/channel_count;
 	}
@@ -327,6 +363,21 @@ function draw_wave(channel_id)
 	}
 	channel.graph.plot(func,"aquamarine",3);
 	channel.graph.draw_axes();
+}
+
+function display_width_inc_dec(e)
+{
+	if ( e.keyCode==38 ) //up arrow
+	{
+		e.target.value=(parseFloat(e.target.value)+0.1).toFixed(1)
+		e.preventDefault();
+	}
+	else if ( e.keyCode==40 ) //down arrow
+	{
+		e.target.value=(parseFloat(e.target.value)-0.1).toFixed(1)
+		e.preventDefault();
+	}
+	
 }
 
 function update_display_width()

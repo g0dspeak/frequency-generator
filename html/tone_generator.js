@@ -66,23 +66,25 @@ function Sinewave()
 	this.f0=440; // initial frequency (Hz)
 	this.f=440; // Frequency in Hz
 	this.phase0=0; // initial phase offset
-	this.phase=0; // phase
-	this.c=343.2
 	this._phase=0; // phase offset from previous block of data
+	this.phase=0; // phase
+	this.c=343.2  // wave speed
+	this.mute=false;
 	this.sampleRate=0;
 
 	function waveform(x)
 	{
 		var lambda=this.c/this.f;
 		var k=1/lambda;  // the wave number
-		return this.A*Math.sin(2*Math.PI*k*x+this.phase); 
+		var A=this.mute ? 0 : this.A
+		return A*Math.sin(2*Math.PI*k*x+this.phase); 
 	}
 	this.waveform=waveform
 
 	function syncProperties()
 	{
 		this.f0=this.f
-		this.A0=this.A
+		this.A0=this.mute ? 0 : this.A;
 		this.phase0=this.phase;
 	}
 	this.syncProperties=syncProperties;
@@ -93,7 +95,8 @@ function Sinewave()
 		// calculate rate of frequency change
 		var k=(this.f-this.f0)/t;
 		// calculate rate of amplitude change
-		var kA=(this.A-this.A0)/data.length;
+		var A=this.mute ? 0 : this.A
+		var kA=(A-this.A0)/data.length;
 		// calculate rate of phase change
 		var kPhase=(this.phase-this.phase0)/data.length;
 		for (var i = 0; i < data.length; i++) 

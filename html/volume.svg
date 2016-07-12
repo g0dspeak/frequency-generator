@@ -119,6 +119,14 @@ function toggle_mute()
 	redraw();
 }
 
+function setColor(c)
+{
+	document.getElementById('speaker').style.stroke=c;
+	document.getElementById('v1').style.stroke=c;
+	document.getElementById('v2').style.stroke=c;
+	document.getElementById('v3').style.stroke=c;
+}
+
 function redraw()
 {
 	if(vol<=0 || m)

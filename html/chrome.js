@@ -439,9 +439,11 @@ function toggle_particles()
 
 function getCSSRule(selectorText)
 {
+	console.log(document.styleSheets);
 	for( var i=0; i<document.styleSheets.length; i++ )
 	{
-		var rules=document.styleSheets[i].rules;
+		var rules=document.styleSheets[i].cssRules;
+		
 		for( var j=0; j<rules.length; j++ )
 		{
 			if(rules[j].selectorText==selectorText)
